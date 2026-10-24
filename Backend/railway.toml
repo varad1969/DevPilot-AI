@@ -1,0 +1,10 @@
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+startCommand = "java -XX:+UseContainerSupport -XX:MaxRAMPercentage=65.0 -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=384m -jar app.jar"
+healthcheckPath = "/"
+healthcheckTimeout = 120
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3

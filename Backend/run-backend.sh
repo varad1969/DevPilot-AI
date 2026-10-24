@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+export OPENAI_API_KEY="${OPENAI_API_KEY}"
+export GITHUB_CLIENT_ID="${GITHUB_CLIENT_ID}"
+export GITHUB_CLIENT_SECRET="${GITHUB_CLIENT_SECRET}"
+export APP_FRONTEND_URL="http://localhost:3000"
+export APP_ENCRYPTION_PASSWORD="devpilot_secret_master_key_12345"
+export DB_URL="jdbc:postgresql://localhost:5433/devpilot"
+export DB_USERNAME="postgres"
+export DB_PASSWORD="postgres"
+./mvnw spring-boot:run

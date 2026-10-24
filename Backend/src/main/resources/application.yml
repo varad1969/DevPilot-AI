@@ -1,0 +1,93 @@
+server:
+  port: ${PORT:8080}
+  forward-headers-strategy: framework
+  servlet:
+    session:
+      cookie:
+        name: JSESSIONID
+        same-site: none
+        secure: true
+        http-only: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+spring:
+  application:
+    name: backend
+  datasource:
+    url: ${DATABASE_URL:${DB_URL:jdbc:postgresql://localhost:5433/devpilot}}
+    username: ${DB_USERNAME:${PGUSER:${POSTGRES_USER:postgres}}}
+    password: ${DB_PASSWORD:${PGPASSWORD:${POSTGRES_PASSWORD:postgres}}}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+
+  ai:
+    openai:
+      base-url: https://api.groq.com/openai/v1
+      api-key: ${GROQ_API_KEY:}
+      chat:
+        base-url: https://api.groq.com/openai/v1
+        api-key: ${GROQ_API_KEY:}
+        options:
+          model: ${GROQ_CHAT_MODEL:openai/gpt-oss-120b}
+      embedding:
+        base-url: https://embedder-production-f633.up.railway.app
+        api-key: dummy-key
+        options:
+          model: all-MiniLM-L6-v2
+          dimensions: 384
+    vectorstore:
+      pgvector:
+        dimensions: 384
+        initialize-schema: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: ${GITHUB_CLIENT_ID:}
+            client-secret: ${GITHUB_CLIENT_SECRET:}
+            scope:
+              - read:user
+              - user:email
+
+        provider:
+          github:
+            authorization-uri: https://github.com/login/oauth/authorize
+            token-uri: https://github.com/login/oauth/access_token
+            user-info-uri: https://api.github.com/user
+            user-name-attribute: login
+
+app:
+  frontend-url: ${APP_FRONTEND_URL:http://localhost:3000}
+  cors:
+    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:3000}
+  token-encryptor-password: ${APP_ENCRYPTION_PASSWORD:devpilot_secret_master_key_12345}
+  token-encryptor-salt: ${APP_ENCRYPTION_SALT:5c0744940b5c369b}
+  groq:
+    api-key: ${GROQ_API_KEY:}
+  embedder:
+    base-url: ${EMBEDDER_URL:https://embedder-production-f633.up.railway.app}
+  indexing:
+    max-file-bytes: 102400
+    chunk-size: 800
+    # Number of days after which an indexed repository is automatically expired.
+    # Expired repos have their vectors deleted; they can be re-indexed on demand.
+    expiry-days: 5
